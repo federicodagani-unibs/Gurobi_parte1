@@ -51,6 +51,7 @@ public class Coppia16 {
                                       {2, 2, 1, 2, 3, 2},
                                       {3, 2, 2, 2, 1, 1},
                                       {1, 2, 2, 3, 2, 3} };
+
             Integer[] spesa_max_mittente = { 2810, 3441, 3205, 3443, 2968, 3127, 3258, 3334, 2933, 2826};
             double budget = 0;
             double omega = 1;
@@ -58,36 +59,55 @@ public class Coppia16 {
 
             //creazione variabili
             GRBVar[][] xij = new GRBVar[ETICHETTE][FASCE_ORARIE];
-            for(int i=0; i<ETICHETTE; i++){
-                for(int j=0; j<FASCE_ORARIE; j++){
-                    xij[i][j] = model.addVar(0.0, GRB.INFINITY, 0.0, GRB.CONTINUOUS,"xij_" +i +"_"+j );
+            for(int i=0; i<ETICHETTE; i++) {
+                for (int j = 0; j < FASCE_ORARIE; j++) {
+                    xij[i][j] = model.addVar(0.0, GRB.INFINITY, 0.0, GRB.CONTINUOUS, "xij_" + i + "_" + j);
                 }
             }
 
-            //aggiunta funz obiettivo
+            //creazione variabili di slack
+            GRBVar[] y = new GRBVar[78];
             GRBLinExpr expr = new GRBLinExpr();
-            GRBLinExpr expr1 = new GRBLinExpr();
-            GRBLinExpr expr2 = new GRBLinExpr();
 
+            //---------------------------------------F.O.----------------------------------------
+
+            //funzione obiettivo con una variabile di sostegno
+            y[0] = model.addVar(0.0, GRB.INFINITY, 0.0, GRB.CONTINUOUS, "y");
+            expr.addTerm(1, y[0]);
+            model.setObjective(expr);
+            model.set(GRB.IntAttr.ModelSense, GRB.MINIMIZE);
+
+
+            //-------------------------------------VINCOLI---------------------------------------
+
+            //aggiunta vincolo 1 : (equazione) <= y
+            expr = new GRBLinExpr();
             for(int i=0; i<ETICHETTE; i++){
                 for(int j=0; j<FASCE_ORARIE; j++){
                     if(j>FASCE_ORARIE/2){
-                        expr1.addTerm(-spettatori[i][j], xij[i][j]);
-                        expr2.addTerm(spettatori[i][j], xij[i][j]);
+                        expr.addTerm(spettatori[i][j], xij[i][j]);
+
                     }else {
-                        expr1.addTerm(spettatori[i][j], xij[i][j]);
-                        expr2.addTerm(-spettatori[i][j], xij[i][j]);
+                        expr.addTerm(-spettatori[i][j], xij[i][j]);
                     }
                 }
             }
-            //salvare il risultato in un altra variabile e metterla come slack
-            //mettere tutti i vincoli in forma standard
-            model.setObjective(expr2);
-            model.setObjective(expr1);
-            model.set(GRB.IntAttr.ModelSense, GRB.MAXIMIZE);
+            model.addConstr(expr, GRB.LESS_EQUAL, y[0], "vincolo minore uguale");
 
-            //model.setObjective(expr);
-            //model.set(GRB.IntAttr.ModelSense, GRB.MINIMIZE);
+            //aggiunta vincolo 2 : (equazione) >= y
+            expr = new GRBLinExpr();
+            for(int i=0; i<ETICHETTE; i++){
+                for(int j=0; j<FASCE_ORARIE; j++){
+                    if(j>FASCE_ORARIE/2){
+                        expr.addTerm(spettatori[i][j], xij[i][j]);
+
+                    }else {
+                        expr.addTerm(-spettatori[i][j], xij[i][j]);
+                    }
+                }
+            }
+            model.addConstr(expr, GRB.GREATER_EQUAL, y[0], "vincolo maggiore uguale");
+
 
             //aggiunta vincoli: max minuti acquistabili in ciacuna fascia per ogni emittente
             for(int i=0; i<ETICHETTE; i++){
@@ -98,7 +118,7 @@ public class Coppia16 {
                 }
             }
 
-            // massima spesa per ogni emittente
+            //aggiunta vincoli: massima spesa per ogni emittente
             for(int i=0; i<ETICHETTE; i++) {
 
                 expr = new GRBLinExpr();
@@ -108,7 +128,9 @@ public class Coppia16 {
                 }
                 model.addConstr(expr, GRB.LESS_EQUAL, spesa_max_mittente[i], "massima spesa per l'emittente " +i);
             }
-            // minima spesa per ciascun emittente, rispetto al budget tot
+
+            //aggiunta vincoli: minima spesa per ciascun emittente, rispetto al budget tot
+            //calcolo budget totale
             for(int i=0; i<ETICHETTE; i++){
                 budget += spesa_max_mittente[i];
             }
@@ -132,11 +154,21 @@ public class Coppia16 {
             }
             model.addConstr(expr, GRB.GREATER_EQUAL, spettatori_min, "minimi spettatori");
 
+
+
+
             //ottimizzazione
             model.optimize();
 
-            //output
-            //System.out.println("funzione obiettivo: " + model.get(GRB.IntAttr.Status));
+            //stampa a video status del problema
+            int status = model.get(GRB.IntAttr.Status);
+            System.out.println("\n\n\nStato Ottimizzazione: "+ status);
+
+            //stampa a video di tutte le variabili del modello
+            for(GRBVar var : model.getVars())
+            {
+                System.out.println(var.get(GRB.StringAttr.VarName)+ ": "+ var.get(GRB.DoubleAttr.X));
+            }
 
         }catch(GRBException e){
             System.out.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
