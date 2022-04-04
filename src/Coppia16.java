@@ -1,8 +1,6 @@
 import gurobi.*;
 import gurobi.GRB.IntParam;
 
-import javax.swing.*;
-
 public class Coppia16 {
 
     static final int ETICHETTE = 10;
@@ -66,7 +64,7 @@ public class Coppia16 {
             }
 
             //creazione variabili di slack
-            GRBVar[] y = new GRBVar[79];
+            GRBVar[] y = new GRBVar[79]; //2 + 60 + 10 + 6 + 1
             GRBLinExpr expr = new GRBLinExpr();
             for(int i=0; i<79; i++) {
                 y[i] = model.addVar(0.0, GRB.INFINITY, 0.0, GRB.CONTINUOUS, "Y " + i);
@@ -233,27 +231,37 @@ public class Coppia16 {
             //variabili in base
             System.out.printf("variabili in base: [");
             int c=0;
+            int tot=0;
             for(GRBVar var : model.getVars())
                 //escludo il valore di W
                 if(!var.get(GRB.StringAttr.VarName).equals("W")) {
-                    //controllo che il valore della variabile e del suo coeff. di costo ridotto sia a zero, dunque mi trovo sul vincolo e quindi è una variabile di base
+                    //controllo che il valore della variabile sia maggiore di zero (lontana dal vincolo) e il ccr = 0, dunque ho una variabile di base
                     if (var.get(GRB.DoubleAttr.X) > 0.0 && var.get(GRB.DoubleAttr.RC) == 0.0) {
                         System.out.printf("1,");
                         c++;
                     }
                     else System.out.printf("0,");
+                    tot++;
                 }
-            System.out.println("]");
-            System.out.printf("%d", c);
+            System.out.printf("] e sono %d su un totale di %d\n", c, tot);
             //coeff CR
             System.out.printf("coefficienti di costo ridotto: [");
             for(GRBVar var : model.getVars())
                 System.out.printf( "" + var.get(GRB.DoubleAttr.RC)+ ",");
             System.out.println("]");
             //soluzione ottima multipla
-            System.out.println("soluzione ottima multipla: ");
+            boolean sol_ottima_multipla = false;
+            for(GRBVar var: model.getVars())
+                //se hanno il valore a zero (non sono in base) e hanno i coefficenti di costo ridotto a zero
+                if(var.get(GRB.DoubleAttr.X) == 0 && var.get(GRB.DoubleAttr.RC) == 0) {
+                    sol_ottima_multipla = true;
+                    break;
+                }
+            System.out.printf("soluzione ottima multipla: %b\n", sol_ottima_multipla);
             //soluzione ottima degenere
-            System.out.println("soluzione ottima degenere: ");
+            boolean sol_ottima_degenere = false;
+            //devo capire come trovare una variabile in base che valga zero
+            System.out.printf("soluzione ottima degenere: %b\n", sol_ottima_degenere);
 
 
 

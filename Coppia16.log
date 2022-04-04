@@ -2563,3 +2563,355 @@ Iteration    Objective       Primal Inf.    Dual Inf.      Time
 
 Solved in 36 iterations and 0.00 seconds (0.00 work units)
 Optimal objective  0.000000000e+00
+
+Gurobi 9.5.1 (win64, Java) logging started Mon Apr  4 18:31:55 2022
+
+Set parameter Username
+Academic license - for non-commercial use only - expires 2023-02-25
+Set parameter Presolve to value 0
+Set parameter Method to value 0
+Gurobi Optimizer version 9.5.1 build v9.5.1rc2 (win64)
+Thread count: 2 physical cores, 4 logical processors, using up to 4 threads
+Optimize a model with 79 rows, 140 columns and 431 nonzeros
+Model fingerprint: 0x2fae8378
+Coefficient statistics:
+  Matrix range     [1e+00, 3e+03]
+  Objective range  [1e+00, 1e+00]
+  Bounds range     [0e+00, 0e+00]
+  RHS range        [1e+00, 8e+04]
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    0.0000000e+00   1.378866e+03   6.844458e+07      0s
+      43    0.0000000e+00   0.000000e+00   0.000000e+00      0s
+
+Solved in 43 iterations and 0.01 seconds (0.00 work units)
+Optimal objective  0.000000000e+00
+
+Gurobi 9.5.1 (win64, Java) logging started Mon Apr  4 18:40:28 2022
+
+Set parameter Username
+Academic license - for non-commercial use only - expires 2023-02-25
+Set parameter Presolve to value 0
+Set parameter Method to value 0
+Gurobi Optimizer version 9.5.1 build v9.5.1rc2 (win64)
+Thread count: 2 physical cores, 4 logical processors, using up to 4 threads
+Optimize a model with 79 rows, 140 columns and 431 nonzeros
+Model fingerprint: 0x2fae8378
+Coefficient statistics:
+  Matrix range     [1e+00, 3e+03]
+  Objective range  [1e+00, 1e+00]
+  Bounds range     [0e+00, 0e+00]
+  RHS range        [1e+00, 8e+04]
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    0.0000000e+00   1.378866e+03   6.844458e+07      0s
+      43    0.0000000e+00   0.000000e+00   0.000000e+00      0s
+
+Solved in 43 iterations and 0.00 seconds (0.00 work units)
+Optimal objective  0.000000000e+00
+
+Gurobi 9.5.1 (win64, Java) logging started Mon Apr  4 18:41:32 2022
+
+Set parameter Username
+Academic license - for non-commercial use only - expires 2023-02-25
+Set parameter Presolve to value 0
+Set parameter Method to value 0
+Gurobi Optimizer version 9.5.1 build v9.5.1rc2 (win64)
+Thread count: 2 physical cores, 4 logical processors, using up to 4 threads
+Optimize a model with 79 rows, 140 columns and 431 nonzeros
+Model fingerprint: 0x2fae8378
+Coefficient statistics:
+  Matrix range     [1e+00, 3e+03]
+  Objective range  [1e+00, 1e+00]
+  Bounds range     [0e+00, 0e+00]
+  RHS range        [1e+00, 8e+04]
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    0.0000000e+00   1.378866e+03   6.844458e+07      0s
+      43    0.0000000e+00   0.000000e+00   0.000000e+00      0s
+
+Solved in 43 iterations and 0.00 seconds (0.00 work units)
+Optimal objective  0.000000000e+00
+
+Gurobi 9.5.1 (win64, Java) logging started Mon Apr  4 18:41:47 2022
+
+Set parameter Username
+Academic license - for non-commercial use only - expires 2023-02-25
+Set parameter Presolve to value 0
+Set parameter Method to value 0
+Gurobi Optimizer version 9.5.1 build v9.5.1rc2 (win64)
+Thread count: 2 physical cores, 4 logical processors, using up to 4 threads
+Optimize a model with 79 rows, 140 columns and 431 nonzeros
+Model fingerprint: 0x2fae8378
+Coefficient statistics:
+  Matrix range     [1e+00, 3e+03]
+  Objective range  [1e+00, 1e+00]
+  Bounds range     [0e+00, 0e+00]
+  RHS range        [1e+00, 8e+04]
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    0.0000000e+00   1.378866e+03   6.844458e+07      0s
+      43    0.0000000e+00   0.000000e+00   0.000000e+00      0s
+
+Solved in 43 iterations and 0.00 seconds (0.00 work units)
+Optimal objective  0.000000000e+00
+
+Gurobi 9.5.1 (win64, Java) logging started Mon Apr  4 18:42:01 2022
+
+Set parameter Username
+Academic license - for non-commercial use only - expires 2023-02-25
+Set parameter Presolve to value 0
+Set parameter Method to value 0
+Gurobi Optimizer version 9.5.1 build v9.5.1rc2 (win64)
+Thread count: 2 physical cores, 4 logical processors, using up to 4 threads
+Optimize a model with 79 rows, 140 columns and 431 nonzeros
+Model fingerprint: 0x2fae8378
+Coefficient statistics:
+  Matrix range     [1e+00, 3e+03]
+  Objective range  [1e+00, 1e+00]
+  Bounds range     [0e+00, 0e+00]
+  RHS range        [1e+00, 8e+04]
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    0.0000000e+00   1.378866e+03   6.844458e+07      0s
+      43    0.0000000e+00   0.000000e+00   0.000000e+00      0s
+
+Solved in 43 iterations and 0.00 seconds (0.00 work units)
+Optimal objective  0.000000000e+00
+
+Gurobi 9.5.1 (win64, Java) logging started Mon Apr  4 18:43:19 2022
+
+Set parameter Username
+Academic license - for non-commercial use only - expires 2023-02-25
+Set parameter Presolve to value 0
+Set parameter Method to value 0
+Gurobi Optimizer version 9.5.1 build v9.5.1rc2 (win64)
+Thread count: 2 physical cores, 4 logical processors, using up to 4 threads
+Optimize a model with 79 rows, 140 columns and 431 nonzeros
+Model fingerprint: 0x2fae8378
+Coefficient statistics:
+  Matrix range     [1e+00, 3e+03]
+  Objective range  [1e+00, 1e+00]
+  Bounds range     [0e+00, 0e+00]
+  RHS range        [1e+00, 8e+04]
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    0.0000000e+00   1.378866e+03   6.844458e+07      0s
+      43    0.0000000e+00   0.000000e+00   0.000000e+00      0s
+
+Solved in 43 iterations and 0.00 seconds (0.00 work units)
+Optimal objective  0.000000000e+00
+
+Gurobi 9.5.1 (win64, Java) logging started Mon Apr  4 18:44:29 2022
+
+Set parameter Username
+Academic license - for non-commercial use only - expires 2023-02-25
+Set parameter Presolve to value 0
+Set parameter Method to value 0
+Gurobi Optimizer version 9.5.1 build v9.5.1rc2 (win64)
+Thread count: 2 physical cores, 4 logical processors, using up to 4 threads
+Optimize a model with 79 rows, 140 columns and 431 nonzeros
+Model fingerprint: 0x2fae8378
+Coefficient statistics:
+  Matrix range     [1e+00, 3e+03]
+  Objective range  [1e+00, 1e+00]
+  Bounds range     [0e+00, 0e+00]
+  RHS range        [1e+00, 8e+04]
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    0.0000000e+00   1.378866e+03   6.844458e+07      0s
+      43    0.0000000e+00   0.000000e+00   0.000000e+00      0s
+
+Solved in 43 iterations and 0.00 seconds (0.00 work units)
+Optimal objective  0.000000000e+00
+
+Gurobi 9.5.1 (win64, Java) logging started Mon Apr  4 18:45:46 2022
+
+Set parameter Username
+Academic license - for non-commercial use only - expires 2023-02-25
+Set parameter Presolve to value 0
+Set parameter Method to value 0
+Gurobi Optimizer version 9.5.1 build v9.5.1rc2 (win64)
+Thread count: 2 physical cores, 4 logical processors, using up to 4 threads
+Optimize a model with 79 rows, 140 columns and 431 nonzeros
+Model fingerprint: 0x2fae8378
+Coefficient statistics:
+  Matrix range     [1e+00, 3e+03]
+  Objective range  [1e+00, 1e+00]
+  Bounds range     [0e+00, 0e+00]
+  RHS range        [1e+00, 8e+04]
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    0.0000000e+00   1.378866e+03   6.844458e+07      0s
+      43    0.0000000e+00   0.000000e+00   0.000000e+00      0s
+
+Solved in 43 iterations and 0.00 seconds (0.00 work units)
+Optimal objective  0.000000000e+00
+
+Gurobi 9.5.1 (win64, Java) logging started Mon Apr  4 18:46:15 2022
+
+Set parameter Username
+Academic license - for non-commercial use only - expires 2023-02-25
+Set parameter Presolve to value 0
+Set parameter Method to value 0
+Gurobi Optimizer version 9.5.1 build v9.5.1rc2 (win64)
+Thread count: 2 physical cores, 4 logical processors, using up to 4 threads
+Optimize a model with 79 rows, 140 columns and 431 nonzeros
+Model fingerprint: 0x2fae8378
+Coefficient statistics:
+  Matrix range     [1e+00, 3e+03]
+  Objective range  [1e+00, 1e+00]
+  Bounds range     [0e+00, 0e+00]
+  RHS range        [1e+00, 8e+04]
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    0.0000000e+00   1.378866e+03   6.844458e+07      0s
+      43    0.0000000e+00   0.000000e+00   0.000000e+00      0s
+
+Solved in 43 iterations and 0.00 seconds (0.00 work units)
+Optimal objective  0.000000000e+00
+
+Gurobi 9.5.1 (win64, Java) logging started Mon Apr  4 18:55:31 2022
+
+Set parameter Username
+Academic license - for non-commercial use only - expires 2023-02-25
+Set parameter Presolve to value 0
+Set parameter Method to value 1
+Gurobi Optimizer version 9.5.1 build v9.5.1rc2 (win64)
+Thread count: 2 physical cores, 4 logical processors, using up to 4 threads
+Optimize a model with 79 rows, 140 columns and 431 nonzeros
+Model fingerprint: 0x2fae8378
+Coefficient statistics:
+  Matrix range     [1e+00, 3e+03]
+  Objective range  [1e+00, 1e+00]
+  Bounds range     [0e+00, 0e+00]
+  RHS range        [1e+00, 8e+04]
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    0.0000000e+00   1.378866e+03   0.000000e+00      0s
+      36    0.0000000e+00   0.000000e+00   0.000000e+00      0s
+
+Solved in 36 iterations and 0.01 seconds (0.00 work units)
+Optimal objective  0.000000000e+00
+
+Gurobi 9.5.1 (win64, Java) logging started Mon Apr  4 19:02:48 2022
+
+Set parameter Username
+Academic license - for non-commercial use only - expires 2023-02-25
+Set parameter Presolve to value 0
+Set parameter Method to value 0
+Gurobi Optimizer version 9.5.1 build v9.5.1rc2 (win64)
+Thread count: 2 physical cores, 4 logical processors, using up to 4 threads
+Optimize a model with 79 rows, 140 columns and 431 nonzeros
+Model fingerprint: 0x2fae8378
+Coefficient statistics:
+  Matrix range     [1e+00, 3e+03]
+  Objective range  [1e+00, 1e+00]
+  Bounds range     [0e+00, 0e+00]
+  RHS range        [1e+00, 8e+04]
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    0.0000000e+00   1.378866e+03   6.844458e+07      0s
+      43    0.0000000e+00   0.000000e+00   0.000000e+00      0s
+
+Solved in 43 iterations and 0.00 seconds (0.00 work units)
+Optimal objective  0.000000000e+00
+
+Gurobi 9.5.1 (win64, Java) logging started Mon Apr  4 19:10:10 2022
+
+Set parameter Username
+Academic license - for non-commercial use only - expires 2023-02-25
+Set parameter Presolve to value 0
+Set parameter Method to value 0
+Gurobi Optimizer version 9.5.1 build v9.5.1rc2 (win64)
+Thread count: 2 physical cores, 4 logical processors, using up to 4 threads
+Optimize a model with 79 rows, 140 columns and 431 nonzeros
+Model fingerprint: 0x2fae8378
+Coefficient statistics:
+  Matrix range     [1e+00, 3e+03]
+  Objective range  [1e+00, 1e+00]
+  Bounds range     [0e+00, 0e+00]
+  RHS range        [1e+00, 8e+04]
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    0.0000000e+00   1.378866e+03   6.844458e+07      0s
+      43    0.0000000e+00   0.000000e+00   0.000000e+00      0s
+
+Solved in 43 iterations and 0.00 seconds (0.00 work units)
+Optimal objective  0.000000000e+00
+
+Gurobi 9.5.1 (win64, Java) logging started Mon Apr  4 19:13:59 2022
+
+Set parameter Username
+Academic license - for non-commercial use only - expires 2023-02-25
+Set parameter Presolve to value 0
+Set parameter Method to value 0
+Gurobi Optimizer version 9.5.1 build v9.5.1rc2 (win64)
+Thread count: 2 physical cores, 4 logical processors, using up to 4 threads
+Optimize a model with 79 rows, 140 columns and 431 nonzeros
+Model fingerprint: 0x2fae8378
+Coefficient statistics:
+  Matrix range     [1e+00, 3e+03]
+  Objective range  [1e+00, 1e+00]
+  Bounds range     [0e+00, 0e+00]
+  RHS range        [1e+00, 8e+04]
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    0.0000000e+00   1.378866e+03   6.844458e+07      0s
+      43    0.0000000e+00   0.000000e+00   0.000000e+00      0s
+
+Solved in 43 iterations and 0.00 seconds (0.00 work units)
+Optimal objective  0.000000000e+00
+
+Gurobi 9.5.1 (win64, Java) logging started Mon Apr  4 19:15:35 2022
+
+Set parameter Username
+Academic license - for non-commercial use only - expires 2023-02-25
+Set parameter Presolve to value 0
+Set parameter Method to value 0
+Gurobi Optimizer version 9.5.1 build v9.5.1rc2 (win64)
+Thread count: 2 physical cores, 4 logical processors, using up to 4 threads
+Optimize a model with 79 rows, 140 columns and 431 nonzeros
+Model fingerprint: 0x2fae8378
+Coefficient statistics:
+  Matrix range     [1e+00, 3e+03]
+  Objective range  [1e+00, 1e+00]
+  Bounds range     [0e+00, 0e+00]
+  RHS range        [1e+00, 8e+04]
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    0.0000000e+00   1.378866e+03   6.844458e+07      0s
+      43    0.0000000e+00   0.000000e+00   0.000000e+00      0s
+
+Solved in 43 iterations and 0.00 seconds (0.00 work units)
+Optimal objective  0.000000000e+00
+
+Gurobi 9.5.1 (win64, Java) logging started Mon Apr  4 19:37:44 2022
+
+Set parameter Username
+Academic license - for non-commercial use only - expires 2023-02-25
+Set parameter Presolve to value 0
+Set parameter Method to value 0
+Gurobi Optimizer version 9.5.1 build v9.5.1rc2 (win64)
+Thread count: 2 physical cores, 4 logical processors, using up to 4 threads
+Optimize a model with 79 rows, 140 columns and 431 nonzeros
+Model fingerprint: 0x2fae8378
+Coefficient statistics:
+  Matrix range     [1e+00, 3e+03]
+  Objective range  [1e+00, 1e+00]
+  Bounds range     [0e+00, 0e+00]
+  RHS range        [1e+00, 8e+04]
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    0.0000000e+00   1.378866e+03   6.844458e+07      0s
+      43    0.0000000e+00   0.000000e+00   0.000000e+00      0s
+
+Solved in 43 iterations and 0.00 seconds (0.00 work units)
+Optimal objective  0.000000000e+00
+
+Gurobi 9.5.1 (win64, Java) logging started Mon Apr  4 19:38:38 2022
+
+Set parameter Username
+Academic license - for non-commercial use only - expires 2023-02-25
+Set parameter Presolve to value 0
+Set parameter Method to value 0
+Gurobi Optimizer version 9.5.1 build v9.5.1rc2 (win64)
+Thread count: 2 physical cores, 4 logical processors, using up to 4 threads
+Optimize a model with 79 rows, 140 columns and 431 nonzeros
+Model fingerprint: 0x2fae8378
+Coefficient statistics:
+  Matrix range     [1e+00, 3e+03]
+  Objective range  [1e+00, 1e+00]
+  Bounds range     [0e+00, 0e+00]
+  RHS range        [1e+00, 8e+04]
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    0.0000000e+00   1.378866e+03   6.844458e+07      0s
+      43    0.0000000e+00   0.000000e+00   0.000000e+00      0s
+
+Solved in 43 iterations and 0.00 seconds (0.00 work units)
+Optimal objective  0.000000000e+00
