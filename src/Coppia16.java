@@ -61,26 +61,43 @@ public class Coppia16 {
             GRBVar[][] xij = new GRBVar[ETICHETTE][FASCE_ORARIE];
             for(int i=0; i<ETICHETTE; i++) {
                 for (int j = 0; j < FASCE_ORARIE; j++) {
-                    xij[i][j] = model.addVar(0.0, GRB.INFINITY, 0.0, GRB.CONTINUOUS, "xij_" + i + "_" + j);
+                    xij[i][j] = model.addVar(0.0, GRB.INFINITY, 0.0, GRB.CONTINUOUS, "X " + i + "_" + j);
                 }
             }
 
             //creazione variabili di slack
-            GRBVar[] y = new GRBVar[78];
+            GRBVar[] y = new GRBVar[79];
             GRBLinExpr expr = new GRBLinExpr();
+            for(int i=0; i<79; i++) {
+                y[i] = model.addVar(0.0, GRB.INFINITY, 0.0, GRB.CONTINUOUS, "Y " + i);
+            }
 
             //---------------------------------------F.O.----------------------------------------
 
             //funzione obiettivo con una variabile di sostegno
-            y[0] = model.addVar(0.0, GRB.INFINITY, 0.0, GRB.CONTINUOUS, "y");
-            expr.addTerm(1, y[0]);
+            GRBVar W = model.addVar(0.0, GRB.INFINITY, 0.0, GRB.CONTINUOUS, "W");
+            expr.addTerm(1, W);
             model.setObjective(expr);
             model.set(GRB.IntAttr.ModelSense, GRB.MINIMIZE);
 
 
             //-------------------------------------VINCOLI---------------------------------------
 
-            //aggiunta vincolo 1 : (equazione) <= y
+            //aggiunta vincolo 1 : (a - b) +y0 = W
+            expr = new GRBLinExpr();
+            for(int i=0; i<ETICHETTE; i++){
+                for(int j=0; j<FASCE_ORARIE; j++){
+                    if(j>FASCE_ORARIE/2){
+                        expr.addTerm(-spettatori[i][j], xij[i][j]);
+                    }else {
+                        expr.addTerm(spettatori[i][j], xij[i][j]);
+                    }
+                }
+            }
+            expr.addTerm(1, y[0]);
+            model.addConstr(expr, GRB.EQUAL, W, "vincolo minore uguale");
+
+            //aggiunta vincolo 2 : (b - a) + y1 = W
             expr = new GRBLinExpr();
             for(int i=0; i<ETICHETTE; i++){
                 for(int j=0; j<FASCE_ORARIE; j++){
@@ -92,21 +109,8 @@ public class Coppia16 {
                     }
                 }
             }
-            model.addConstr(expr, GRB.LESS_EQUAL, y[0], "vincolo minore uguale");
-
-            //aggiunta vincolo 2 : (equazione) >= y
-            expr = new GRBLinExpr();
-            for(int i=0; i<ETICHETTE; i++){
-                for(int j=0; j<FASCE_ORARIE; j++){
-                    if(j>FASCE_ORARIE/2){
-                        expr.addTerm(spettatori[i][j], xij[i][j]);
-
-                    }else {
-                        expr.addTerm(-spettatori[i][j], xij[i][j]);
-                    }
-                }
-            }
-            model.addConstr(expr, GRB.GREATER_EQUAL, y[0], "vincolo maggiore uguale");
+            expr.addTerm(1, y[1]);
+            model.addConstr(expr, GRB.EQUAL, W, "vincolo maggiore uguale");
 
 
             //aggiunta vincoli: max minuti acquistabili in ciacuna fascia per ogni emittente
@@ -114,7 +118,8 @@ public class Coppia16 {
                 for(int j=0; j<FASCE_ORARIE; j++) {
                     expr = new GRBLinExpr();
                     expr.addTerm(1, xij[i][j]);
-                    model.addConstr(expr, GRB.LESS_EQUAL, tempi_max[i][j], "vincolo tempistica: i:" +i+ " j:" + j);
+                    expr.addTerm(1, y[i+j*10 +2]);
+                    model.addConstr(expr, GRB.EQUAL, tempi_max[i][j], "vincolo tempistica: i:" +i+ " j:" + j);
                 }
             }
 
@@ -142,7 +147,8 @@ public class Coppia16 {
                 for(int i=0; i<ETICHETTE; i++){
                     expr.addTerm(costi[i][j], xij[i][j]);
                 }
-                model.addConstr(expr, GRB.GREATER_EQUAL, omega/100*budget , "minima spesa per fascia oraria: " +j);
+                expr.addTerm(-1, y[72 + j]);
+                model.addConstr(expr, GRB.EQUAL, omega/100*budget , "minima spesa per fascia oraria: " +j);
             }
 
             // minima copertura giornaliera di spettatori
@@ -152,7 +158,8 @@ public class Coppia16 {
                     expr.addTerm(spettatori[i][j], xij[i][j]);
                 }
             }
-            model.addConstr(expr, GRB.GREATER_EQUAL, spettatori_min, "minimi spettatori");
+            expr.addTerm(-1, y[78]);
+            model.addConstr(expr, GRB.EQUAL, spettatori_min, "minimi spettatori");
 
 
 
@@ -161,14 +168,68 @@ public class Coppia16 {
             model.optimize();
 
             //stampa a video status del problema
-            int status = model.get(GRB.IntAttr.Status);
-            System.out.println("\n\n\nStato Ottimizzazione: "+ status);
+            //int status = model.get(GRB.IntAttr.Status);
+            //System.out.println("\n\n\nStato Ottimizzazione: "+ status);
 
             //stampa a video di tutte le variabili del modello
+/*
             for(GRBVar var : model.getVars())
             {
                 System.out.println(var.get(GRB.StringAttr.VarName)+ ": "+ var.get(GRB.DoubleAttr.X));
             }
+
+            for(GRBVar var : model.getVars())
+            {
+                System.out.println(var.get(GRB.StringAttr.VarName)+ "_costo coefficiente ridotto: "+ var.get(GRB.DoubleAttr.RC));
+            }
+
+            for(GRBConstr constr : model.getConstrs())
+            {
+                System.out.println(constr.get(GRB.StringAttr.ConstrName)+ ": "+ constr.get(GRB.DoubleAttr.Slack));
+            }
+
+*/
+            //-----------------------------QUESITO 1--------------------------------------
+
+            //calcolo copertura raggiunta totale
+            double copertura_tot=0;
+            for(int i=0; i<ETICHETTE; i++){
+                for (int j=0; j<FASCE_ORARIE; j++){
+                    copertura_tot += xij[i][j].get(GRB.DoubleAttr.X) * spettatori[i][j];
+                }
+            }
+            //calcolo del tempo acquistato
+            double tempo_acquistato = 0;
+            for(int i=0; i<ETICHETTE; i++){
+                for (int j=0; j<FASCE_ORARIE; j++){
+                    tempo_acquistato += xij[i][j].get(GRB.DoubleAttr.X);
+                }
+            }
+            //calcolo budget inutilizzato
+            double budget_utilizzato = 0;
+            for(int i=0; i<ETICHETTE; i++){
+                for (int j=0; j<FASCE_ORARIE; j++){
+                    budget_utilizzato += xij[i][j].get(GRB.DoubleAttr.X) * costi[i][j];
+                }
+            }
+
+            // STAMPA A VIDEO
+            System.out.println("GRUPPO <coppia 16>");
+            System.out.println("Componenti: <Bresciani Simone> <Dagani Federico>\n");
+
+            System.out.println("QUESITO 1:");
+            System.out.printf("funzione obiettivo = %.4f\n", model.get(GRB.DoubleAttr.ObjVal));
+            System.out.printf("copertura raggiunta totale = %.4f spettatori\n", copertura_tot);
+            System.out.printf("tempo acquistato = %.4f minuti\n", tempo_acquistato);
+            System.out.printf("budget inutilizzato = %.4f\n", budget-budget_utilizzato);
+            System.out.println("soluzione di base ottima:");
+            for(GRBVar var : model.getVars())
+                System.out.println(var.get(GRB.StringAttr.VarName)+ " = "+ var.get(GRB.DoubleAttr.X));
+
+
+            //-------------------------------QUESITO 2--------------------------------------
+
+
 
         }catch(GRBException e){
             System.out.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
