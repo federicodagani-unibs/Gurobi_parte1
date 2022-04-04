@@ -217,7 +217,7 @@ public class Coppia16 {
             System.out.println("GRUPPO <coppia 16>");
             System.out.println("Componenti: <Bresciani Simone> <Dagani Federico>\n");
 
-            System.out.println("QUESITO 1:");
+            System.out.println("QUESITO I:");
             System.out.printf("funzione obiettivo = %.4f\n", model.get(GRB.DoubleAttr.ObjVal));
             System.out.printf("copertura raggiunta totale = %.4f spettatori\n", copertura_tot);
             System.out.printf("tempo acquistato = %.4f minuti\n", tempo_acquistato);
@@ -228,6 +228,32 @@ public class Coppia16 {
 
 
             //-------------------------------QUESITO 2--------------------------------------
+
+            System.out.println("\n\nQUESITO II:");
+            //variabili in base
+            System.out.printf("variabili in base: [");
+            int c=0;
+            for(GRBVar var : model.getVars())
+                //escludo il valore di W
+                if(!var.get(GRB.StringAttr.VarName).equals("W")) {
+                    //controllo che il valore della variabile e del suo coeff. di costo ridotto sia a zero, dunque mi trovo sul vincolo e quindi è una variabile di base
+                    if (var.get(GRB.DoubleAttr.X) > 0.0 && var.get(GRB.DoubleAttr.RC) == 0.0) {
+                        System.out.printf("1,");
+                        c++;
+                    }
+                    else System.out.printf("0,");
+                }
+            System.out.println("]");
+            System.out.printf("%d", c);
+            //coeff CR
+            System.out.printf("coefficienti di costo ridotto: [");
+            for(GRBVar var : model.getVars())
+                System.out.printf( "" + var.get(GRB.DoubleAttr.RC)+ ",");
+            System.out.println("]");
+            //soluzione ottima multipla
+            System.out.println("soluzione ottima multipla: ");
+            //soluzione ottima degenere
+            System.out.println("soluzione ottima degenere: ");
 
 
 
