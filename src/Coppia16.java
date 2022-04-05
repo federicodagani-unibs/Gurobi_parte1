@@ -85,6 +85,7 @@ public class Coppia16 {
 
             //aggiunta vincolo 1 : (a - b) +y0 = W
             expr = new GRBLinExpr();
+            int contatore=0;//contatore che scorre il vettore delle variabili y
             for(int i=0; i<ETICHETTE; i++){
                 for(int j=0; j<FASCE_ORARIE; j++){
                     if(j>FASCE_ORARIE/2){
@@ -94,7 +95,8 @@ public class Coppia16 {
                     }
                 }
             }
-            expr.addTerm(1, y[0]);
+            expr.addTerm(1, y[contatore]);//y[0]
+            contatore++;
             model.addConstr(expr, GRB.EQUAL, W, "vincolo minore uguale");
 
             //aggiunta vincolo 2 : (b - a) + y1 = W
@@ -109,7 +111,8 @@ public class Coppia16 {
                     }
                 }
             }
-            expr.addTerm(1, y[1]);
+            expr.addTerm(1, y[contatore]);//y[1]
+            contatore++;
             model.addConstr(expr, GRB.EQUAL, W, "vincolo maggiore uguale");
 
 
@@ -118,7 +121,8 @@ public class Coppia16 {
                 for(int j=0; j<FASCE_ORARIE; j++) {
                     expr = new GRBLinExpr();
                     expr.addTerm(1, xij[i][j]);
-                    expr.addTerm(1, y[i+j*10 +2]);
+                    expr.addTerm(1, y[contatore]);//y[2]----y[61]
+                    contatore++;
                     model.addConstr(expr, GRB.EQUAL, tempi_max[i][j], "vincolo tempistica: i:" +i+ " j:" + j);
                 }
             }
@@ -131,7 +135,9 @@ public class Coppia16 {
                 for(int j=0; j<FASCE_ORARIE; j++){
                     expr.addTerm(costi[i][j], xij[i][j]);
                 }
-                model.addConstr(expr, GRB.LESS_EQUAL, spesa_max_mittente[i], "massima spesa per l'emittente " +i);
+                expr.addTerm(1, y[contatore]);//y[62]------y[71]
+                contatore++;
+                model.addConstr(expr, GRB.EQUAL, spesa_max_mittente[i], "massima spesa per l'emittente " +i);
             }
 
             //aggiunta vincoli: minima spesa per ciascun emittente, rispetto al budget tot
@@ -147,7 +153,8 @@ public class Coppia16 {
                 for(int i=0; i<ETICHETTE; i++){
                     expr.addTerm(costi[i][j], xij[i][j]);
                 }
-                expr.addTerm(-1, y[72 + j]);
+                expr.addTerm(-1, y[contatore]);//y[72]------y[77]
+                contatore++;
                 model.addConstr(expr, GRB.EQUAL, omega/100*budget , "minima spesa per fascia oraria: " +j);
             }
 
@@ -158,7 +165,7 @@ public class Coppia16 {
                     expr.addTerm(spettatori[i][j], xij[i][j]);
                 }
             }
-            expr.addTerm(-1, y[78]);
+            expr.addTerm(-1, y[contatore]);//y[78]
             model.addConstr(expr, GRB.EQUAL, spettatori_min, "minimi spettatori");
 
 
@@ -223,9 +230,10 @@ public class Coppia16 {
             System.out.printf("tempo acquistato = %.4f minuti\n", tempo_acquistato);
             System.out.printf("budget inutilizzato = %.4f\n", budget-budget_utilizzato);
             System.out.println("soluzione di base ottima:");
-            for(GRBVar var : model.getVars())
-                System.out.println(var.get(GRB.StringAttr.VarName)+ " = "+ var.get(GRB.DoubleAttr.X));
-
+            for(GRBVar var : model.getVars()) {
+                if(!var.get(GRB.StringAttr.VarName).equals("W"))
+                    System.out.println(var.get(GRB.StringAttr.VarName) + " = " + var.get(GRB.DoubleAttr.X));
+            }
 
             //-------------------------------QUESITO 2--------------------------------------
 
@@ -294,6 +302,7 @@ public class Coppia16 {
 
             //aggiunta vincolo 1 : (a - b) +y0 + h0= W
             expr = new GRBLinExpr();
+            contatore = 0;
             for(int i=0; i<ETICHETTE; i++){
                 for(int j=0; j<FASCE_ORARIE; j++){
                     if(j>FASCE_ORARIE/2){
@@ -303,8 +312,9 @@ public class Coppia16 {
                     }
                 }
             }
-            expr.addTerm(1, y[0]);
-            expr.addTerm(1, h[0]);
+            expr.addTerm(1, y[contatore]);
+            expr.addTerm(1, h[contatore]);
+            contatore++;
             model.addConstr(expr, GRB.EQUAL, K, "vincolo minore uguale");
 
             //aggiunta vincolo 2 : (b - a) + y1 +h1= W
@@ -319,8 +329,9 @@ public class Coppia16 {
                     }
                 }
             }
-            expr.addTerm(1, y[1]);
-            expr.addTerm(1, h[1]);
+            expr.addTerm(1, y[contatore]);
+            expr.addTerm(1, h[contatore]);
+            contatore++;
             model.addConstr(expr, GRB.EQUAL, K, "vincolo maggiore uguale");
 
 
@@ -329,8 +340,9 @@ public class Coppia16 {
                 for(int j=0; j<FASCE_ORARIE; j++) {
                     expr = new GRBLinExpr();
                     expr.addTerm(1, xij[i][j]);
-                    expr.addTerm(1, y[i+j*10 +2]);
-                    expr.addTerm(1, h[i+j*10 +2]);
+                    expr.addTerm(1, y[contatore]);
+                    expr.addTerm(1, h[contatore]);
+                    contatore++;
                     model.addConstr(expr, GRB.EQUAL, tempi_max[i][j], "vincolo tempistica: i:" +i+ " j:" + j);
                 }
             }
@@ -343,9 +355,10 @@ public class Coppia16 {
                 for(int j=0; j<FASCE_ORARIE; j++){
                     expr.addTerm(costi[i][j], xij[i][j]);
                 }
-                expr.addTerm(+1, y[62 + i]);
-                expr.addTerm(+1, h[62 + i]);
-                model.addConstr(expr, GRB.LESS_EQUAL, spesa_max_mittente[i], "massima spesa per l'emittente " +i);
+                expr.addTerm(+1, y[contatore]);
+                expr.addTerm(+1, h[contatore]);
+                contatore++;
+                model.addConstr(expr, GRB.EQUAL, spesa_max_mittente[i], "massima spesa per l'emittente " +i);
             }
 
             //aggiunta vincoli: minima spesa per ciascun emittente, rispetto al budget tot
@@ -357,8 +370,9 @@ public class Coppia16 {
                 for(int i=0; i<ETICHETTE; i++){
                     expr.addTerm(costi[i][j], xij[i][j]);
                 }
-                expr.addTerm(-1, y[72 + j]);
-                expr.addTerm(-1, h[72 + j]);
+                expr.addTerm(-1, y[contatore]);
+                expr.addTerm(-1, h[contatore]);
+                contatore++;
                 model.addConstr(expr, GRB.EQUAL, omega/100*budget , "minima spesa per fascia oraria: " +j);
             }
 
@@ -369,8 +383,8 @@ public class Coppia16 {
                     expr.addTerm(spettatori[i][j], xij[i][j]);
                 }
             }
-            expr.addTerm(-1, y[78]);
-            expr.addTerm(-1, h[78]);
+            expr.addTerm(-1, y[contatore]);
+            expr.addTerm(-1, h[contatore]);
             model.addConstr(expr, GRB.EQUAL, spettatori_min, "minimi spettatori");
 
             model.optimize();
