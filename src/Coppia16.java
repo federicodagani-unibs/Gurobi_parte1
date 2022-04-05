@@ -242,16 +242,12 @@ public class Coppia16 {
             System.out.printf("variabili in base: [");
             int c=0;
             for(GRBVar var : model.getVars())
-                //escludo il valore di W
-                if(!var.get(GRB.StringAttr.VarName).equals("W")) {
-                    //controllo che il valore della variabile sia maggiore di zero (lontana dal vincolo) e il ccr = 0, dunque ho una variabile di base
-                    if(var.get(VBasis) == 0){
-                        System.out.printf("1,");
-                        c++;
-                    }else{
-                        System.out.printf("0,");
-                    }
-
+                //controllo che il valore della variabile sia maggiore di zero (lontana dal vincolo) e il ccr = 0, dunque ho una variabile di base
+                if(var.get(VBasis) == 0){
+                    System.out.printf("1,");
+                    c++;
+                }else{
+                    System.out.printf("0,");
                 }
             System.out.printf("] e sono %d\n", c);
             //coeff CR
@@ -276,10 +272,10 @@ public class Coppia16 {
                     sol_ottima_degenere = true;
                     break;
                 }
-            System.out.printf("soluzione ottima degenere: %b\n", sol_ottima_degenere);
+            System.out.printf("soluzione ottima degenere: %b\n\n\n", sol_ottima_degenere);
 
             //-------------------------------QUESITO 3--------------------------------------
-
+            System.out.printf("QUESITO III:\n");
             //PROCEDURA 1: Cottengo una sol ammissibile grazie al problema ausiliario
             //creo le variabili ausiliarie
 
@@ -390,15 +386,25 @@ public class Coppia16 {
             model.optimize();
 
             boolean sol_amm_1 = true;
+            //controllo che la funzione obiettivo del problema ausiliario sia zero
             if(model.get(GRB.DoubleAttr.ObjVal) == 0){
+                //itero solo sulle variabili ausiliarie
                 for(GRBVar var : h)
-                    if(var.get(GRB.DoubleAttr.RC) != 0)
+                    //se la variabile ausiliaria è in base con valore diverso da zero allora il mio problema non ha sol
+                    if(var.get(GRB.IntAttr.VBasis) == 0 && var.get(GRB.DoubleAttr.X) != 0)
                         sol_amm_1 = false;
             }else{
+                sol_amm_1 = false;
+            }//guardo se sol_amm_1 è ancora vero, in caso comunico la sol di partenza, che non è l'ottimo
+            if(sol_amm_1){
+                System.out.println("soluzione di ammissibile non ottima:");
+                for(GRBVar var : model.getVars()) {
+                    if(!var.get(GRB.StringAttr.VarName).equals("K"))
+                        System.out.println(var.get(GRB.StringAttr.VarName) + " = " + var.get(GRB.DoubleAttr.X));
+                }
+            }else {
                 System.out.println("Due fasi non applicabile");
             }
-            if(sol_amm_1);//
-                //comunica sol ammissibie trovata
         }catch(GRBException e){
             System.out.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
         }
