@@ -1,6 +1,8 @@
 import gurobi.*;
 import gurobi.GRB.IntParam;
 
+import static gurobi.GRB.IntAttr.VBasis;
+
 public class Coppia16 {
 
     static final int ETICHETTE = 10;
@@ -231,19 +233,19 @@ public class Coppia16 {
             //variabili in base
             System.out.printf("variabili in base: [");
             int c=0;
-            int tot=0;
             for(GRBVar var : model.getVars())
                 //escludo il valore di W
                 if(!var.get(GRB.StringAttr.VarName).equals("W")) {
                     //controllo che il valore della variabile sia maggiore di zero (lontana dal vincolo) e il ccr = 0, dunque ho una variabile di base
-                    if (var.get(GRB.DoubleAttr.X) > 0.0 && var.get(GRB.DoubleAttr.RC) == 0.0) {
+                    if(var.get(VBasis) == 0){
                         System.out.printf("1,");
                         c++;
+                    }else{
+                        System.out.printf("0,");
                     }
-                    else System.out.printf("0,");
-                    tot++;
+
                 }
-            System.out.printf("] e sono %d su un totale di %d\n", c, tot);
+            System.out.printf("] e sono %d\n", c);
             //coeff CR
             System.out.printf("coefficienti di costo ridotto: [");
             for(GRBVar var : model.getVars())
@@ -252,19 +254,137 @@ public class Coppia16 {
             //soluzione ottima multipla
             boolean sol_ottima_multipla = false;
             for(GRBVar var: model.getVars())
-                //se hanno il valore a zero (non sono in base) e hanno i coefficenti di costo ridotto a zero
-                if(var.get(GRB.DoubleAttr.X) == 0 && var.get(GRB.DoubleAttr.RC) == 0) {
+                //se non sono in base e hanno i coefficenti di costo ridotto a zero
+                if(var.get(VBasis) != 0 && var.get(GRB.DoubleAttr.RC) == 0) {
                     sol_ottima_multipla = true;
                     break;
                 }
             System.out.printf("soluzione ottima multipla: %b\n", sol_ottima_multipla);
             //soluzione ottima degenere
             boolean sol_ottima_degenere = false;
-            //devo capire come trovare una variabile in base che valga zero
+            for (GRBVar var: model.getVars())
+                //se sono in base e hanno i valori a zero
+                if(var.get(VBasis)==0 && var.get(GRB.DoubleAttr.X) == 0){
+                    sol_ottima_degenere = true;
+                    break;
+                }
             System.out.printf("soluzione ottima degenere: %b\n", sol_ottima_degenere);
 
+            //-------------------------------QUESITO 3--------------------------------------
+
+            //PROCEDURA 1: Cottengo una sol ammissibile grazie al problema ausiliario
+            //creo le variabili ausiliarie
+
+            model.reset();
+
+            GRBVar[] h = new GRBVar[79]; //2 + 60 + 10 + 6 + 1
+            expr = new GRBLinExpr();
+            for(int i=0; i<79; i++) {
+                h[i] = model.addVar(0.0, GRB.INFINITY, 0.0, GRB.CONTINUOUS, "H " + i);
+            }
+
+            //---------------------------------------F.O. CON AUSILIARIE----------------------------------------
+            //funzione obiettivo
+            GRBVar K = model.addVar(0.0, GRB.INFINITY, 0.0, GRB.CONTINUOUS, "W");
+            expr.addTerm(1, K);
+            model.setObjective(expr);
+            model.set(GRB.IntAttr.ModelSense, GRB.MINIMIZE);
+
+            //-------------------------------VINCOLI CON AUSILIARIE---------------------------------------
+
+            //aggiunta vincolo 1 : (a - b) +y0 + h0= W
+            expr = new GRBLinExpr();
+            for(int i=0; i<ETICHETTE; i++){
+                for(int j=0; j<FASCE_ORARIE; j++){
+                    if(j>FASCE_ORARIE/2){
+                        expr.addTerm(-spettatori[i][j], xij[i][j]);
+                    }else {
+                        expr.addTerm(spettatori[i][j], xij[i][j]);
+                    }
+                }
+            }
+            expr.addTerm(1, y[0]);
+            expr.addTerm(1, h[0]);
+            model.addConstr(expr, GRB.EQUAL, K, "vincolo minore uguale");
+
+            //aggiunta vincolo 2 : (b - a) + y1 +h1= W
+            expr = new GRBLinExpr();
+            for(int i=0; i<ETICHETTE; i++){
+                for(int j=0; j<FASCE_ORARIE; j++){
+                    if(j>FASCE_ORARIE/2){
+                        expr.addTerm(spettatori[i][j], xij[i][j]);
+
+                    }else {
+                        expr.addTerm(-spettatori[i][j], xij[i][j]);
+                    }
+                }
+            }
+            expr.addTerm(1, y[1]);
+            expr.addTerm(1, h[1]);
+            model.addConstr(expr, GRB.EQUAL, K, "vincolo maggiore uguale");
 
 
+            //aggiunta vincoli: max minuti acquistabili in ciacuna fascia per ogni emittente
+            for(int i=0; i<ETICHETTE; i++){
+                for(int j=0; j<FASCE_ORARIE; j++) {
+                    expr = new GRBLinExpr();
+                    expr.addTerm(1, xij[i][j]);
+                    expr.addTerm(1, y[i+j*10 +2]);
+                    expr.addTerm(1, h[i+j*10 +2]);
+                    model.addConstr(expr, GRB.EQUAL, tempi_max[i][j], "vincolo tempistica: i:" +i+ " j:" + j);
+                }
+            }
+
+            //aggiunta vincoli: massima spesa per ogni emittente
+            for(int i=0; i<ETICHETTE; i++) {
+
+                expr = new GRBLinExpr();
+
+                for(int j=0; j<FASCE_ORARIE; j++){
+                    expr.addTerm(costi[i][j], xij[i][j]);
+                }
+                expr.addTerm(+1, y[62 + i]);
+                expr.addTerm(+1, h[62 + i]);
+                model.addConstr(expr, GRB.LESS_EQUAL, spesa_max_mittente[i], "massima spesa per l'emittente " +i);
+            }
+
+            //aggiunta vincoli: minima spesa per ciascun emittente, rispetto al budget tot
+
+            for(int j=0; j<FASCE_ORARIE; j++) {
+
+                expr = new GRBLinExpr();
+
+                for(int i=0; i<ETICHETTE; i++){
+                    expr.addTerm(costi[i][j], xij[i][j]);
+                }
+                expr.addTerm(-1, y[72 + j]);
+                expr.addTerm(-1, h[72 + j]);
+                model.addConstr(expr, GRB.EQUAL, omega/100*budget , "minima spesa per fascia oraria: " +j);
+            }
+
+            // minima copertura giornaliera di spettatori
+            expr = new GRBLinExpr();
+            for(int i=0; i<ETICHETTE; i++) {
+                for(int j=0; j<FASCE_ORARIE; j++){
+                    expr.addTerm(spettatori[i][j], xij[i][j]);
+                }
+            }
+            expr.addTerm(-1, y[78]);
+            expr.addTerm(-1, h[78]);
+            model.addConstr(expr, GRB.EQUAL, spettatori_min, "minimi spettatori");
+
+            model.optimize();
+
+            boolean sol_amm_1 = true;
+            if(model.get(GRB.DoubleAttr.ObjVal) == 0){
+                for(GRBVar var : h)
+                    if(var.get(GRB.DoubleAttr.RC) != 0)
+                        sol_amm_1 = false;
+            }else{
+                System.out.println("Due fasi non applicabile");
+            }
+            if(sol_amm_1);//
+                //comunica sol ammissibie trovata
         }catch(GRBException e){
             System.out.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
         }
