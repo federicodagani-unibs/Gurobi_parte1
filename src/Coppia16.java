@@ -280,6 +280,7 @@ public class Coppia16 {
             //creo le variabili ausiliarie
 
             model.reset();
+            model.remove(W);
 
             GRBVar[] h = new GRBVar[79]; //2 + 60 + 10 + 6 + 1
             expr = new GRBLinExpr();
@@ -399,7 +400,7 @@ public class Coppia16 {
             if(sol_amm_1){
                 System.out.println("soluzione di ammissibile non ottima:");
                 for(GRBVar var : model.getVars()) {
-                    if(!var.get(GRB.StringAttr.VarName).equals("K"))
+                    if(!var.get(GRB.StringAttr.VarName).equals("K") && !var.get(GRB.StringAttr.VarName).equals("W") )
                         System.out.println(var.get(GRB.StringAttr.VarName) + " = " + var.get(GRB.DoubleAttr.X));
                 }
             }else {
