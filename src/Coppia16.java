@@ -273,12 +273,14 @@ public class Coppia16 {
 
             //---------------------------------------F.O. CON AUSILIARIE----------------------------------------
             //funzione obiettivo
-            GRBVar K = model.addVar(0.0, GRB.INFINITY, 0.0, GRB.CONTINUOUS, "W");
-            expr.addTerm(1, K);
+            for (GRBVar var : h)
+                expr.addTerm(1,var);
             model.setObjective(expr);
             model.set(GRB.IntAttr.ModelSense, GRB.MINIMIZE);
 
             //-------------------------------VINCOLI CON AUSILIARIE---------------------------------------
+
+            GRBVar K = model.addVar(0.0, GRB.INFINITY, 0.0, GRB.CONTINUOUS, "W");
 
             //aggiunta vincolo 1 : (a - b) +y0 + h0= W
             expr = new GRBLinExpr();
