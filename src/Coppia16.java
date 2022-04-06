@@ -210,8 +210,8 @@ public class Coppia16 {
                     System.out.println(var.get(GRB.StringAttr.VarName) + " = " + var.get(GRB.DoubleAttr.X));
             }
             //salvo la sol in una variabile perchè mi servirà nella PROCEDURA 2 del QUESITO 3
-            Double[] sol_ottima = new Double[79];
-            for(int i=0; i<79; i++){
+            Double[] sol_ottima = new Double[79+60];
+            for(int i=0; i<79+60; i++){
                 sol_ottima[i] = model.getVar(i).get(GRB.DoubleAttr.X);
             }
 
@@ -263,7 +263,7 @@ public class Coppia16 {
             model.remove(W);
 
             //salverò la sol ammissimibile, perchè mi servirà per la PROCEDURA 2
-            Double[] sol_fase_1 = new Double[79];
+            Double[] sol_fase_1 = new Double[79+60];
 
             GRBVar[] h = new GRBVar[79]; //2 + 60 + 10 + 6 + 1
             expr = new GRBLinExpr();
@@ -382,7 +382,7 @@ public class Coppia16 {
             }//guardo se sol_amm_1 è ancora vero, in caso comunico la sol di partenza, che non è l'ottimo
             if(sol_amm_1){
                 System.out.println("\nsoluzione ammissibile non ottima 1:");
-                for(int i=0; i<79; i++){
+                for(int i=0; i<79+60; i++){
                     GRBVar var = model.getVar(i);
                     if(!var.get(GRB.StringAttr.VarName).equals("K") && !var.get(GRB.StringAttr.VarName).equals("W")){
                         System.out.println(var.get(GRB.StringAttr.VarName) + " = " + var.get(GRB.DoubleAttr.X));
@@ -397,13 +397,13 @@ public class Coppia16 {
             //PROCEDURA 2: Faccio una combinazione convessa tra la sol trovata dalla prima fase e la sol ottima, per comodità trovo il punto medio tra i 2
 
             //Creo una nuova sol che sarà il punto medio, ovvero la mia sol ammisibile
-            Double[] punto_medio = new Double[79];
-            for (int i=0; i<79; i++){
+            Double[] punto_medio = new Double[79+60];
+            for (int i=0; i<79+60; i++){
                 punto_medio[i] = (sol_fase_1[i] + sol_ottima[i])/2;
             }
             //comunico la sol trovata
             System.out.println("\nsoluzione ammissibile non ottima 2:");
-            for (int i=0; i<79; i++) {
+            for (int i=0; i<79+60; i++) {
                 System.out.println(model.getVar(i).get(GRB.StringAttr.VarName) + " = " + punto_medio[i]);
             }
 
