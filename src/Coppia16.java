@@ -168,34 +168,9 @@ public class Coppia16 {
             expr.addTerm(-1, y[contatore]);//y[78]
             model.addConstr(expr, GRB.EQUAL, spettatori_min, "minimi spettatori");
 
-
-
-
             //ottimizzazione
             model.optimize();
 
-            //stampa a video status del problema
-            //int status = model.get(GRB.IntAttr.Status);
-            //System.out.println("\n\n\nStato Ottimizzazione: "+ status);
-
-            //stampa a video di tutte le variabili del modello
-/*
-            for(GRBVar var : model.getVars())
-            {
-                System.out.println(var.get(GRB.StringAttr.VarName)+ ": "+ var.get(GRB.DoubleAttr.X));
-            }
-
-            for(GRBVar var : model.getVars())
-            {
-                System.out.println(var.get(GRB.StringAttr.VarName)+ "_costo coefficiente ridotto: "+ var.get(GRB.DoubleAttr.RC));
-            }
-
-            for(GRBConstr constr : model.getConstrs())
-            {
-                System.out.println(constr.get(GRB.StringAttr.ConstrName)+ ": "+ constr.get(GRB.DoubleAttr.Slack));
-            }
-
-*/
             //-----------------------------QUESITO 1--------------------------------------
 
             //calcolo copertura raggiunta totale
@@ -234,6 +209,11 @@ public class Coppia16 {
                 if(!var.get(GRB.StringAttr.VarName).equals("W"))
                     System.out.println(var.get(GRB.StringAttr.VarName) + " = " + var.get(GRB.DoubleAttr.X));
             }
+            //salvo la sol in una variabile perchè mi servirà nella PROCEDURA 2 del QUESITO 3
+            Double[] sol_ottima = new Double[79];
+            for(int i=0; i<79; i++){
+                sol_ottima[i] = model.getVar(i).get(GRB.DoubleAttr.X);
+            }
 
             //-------------------------------QUESITO 2--------------------------------------
 
@@ -257,12 +237,13 @@ public class Coppia16 {
             System.out.println("]");
             //soluzione ottima multipla
             boolean sol_ottima_multipla = false;
+            int ccr_0 = 0;
             for(GRBVar var: model.getVars())
-                //se non sono in base e hanno i coefficenti di costo ridotto a zero
-                if(var.get(VBasis) != 0 && var.get(GRB.DoubleAttr.RC) == 0) {
-                    sol_ottima_multipla = true;
-                    break;
-                }
+                //se ho più coff costo ridotto a zero dei vincoli
+                if(var.get(GRB.DoubleAttr.RC) == 0)
+                    ccr_0++;
+            if(ccr_0 > 79)
+                sol_ottima_multipla = true;
             System.out.printf("soluzione ottima multipla: %b\n", sol_ottima_multipla);
             //soluzione ottima degenere
             boolean sol_ottima_degenere = false;
@@ -278,9 +259,11 @@ public class Coppia16 {
             System.out.printf("QUESITO III:\n");
             //PROCEDURA 1: Cottengo una sol ammissibile grazie al problema ausiliario
             //creo le variabili ausiliarie
-
             model.reset();
             model.remove(W);
+
+            //salverò la sol ammissimibile, perchè mi servirà per la PROCEDURA 2
+            Double[] sol_fase_1 = new Double[79];
 
             GRBVar[] h = new GRBVar[79]; //2 + 60 + 10 + 6 + 1
             expr = new GRBLinExpr();
@@ -398,14 +381,32 @@ public class Coppia16 {
                 sol_amm_1 = false;
             }//guardo se sol_amm_1 è ancora vero, in caso comunico la sol di partenza, che non è l'ottimo
             if(sol_amm_1){
-                System.out.println("soluzione di ammissibile non ottima:");
-                for(GRBVar var : model.getVars()) {
-                    if(!var.get(GRB.StringAttr.VarName).equals("K") && !var.get(GRB.StringAttr.VarName).equals("W") )
+                System.out.println("\nsoluzione ammissibile non ottima 1:");
+                for(int i=0; i<79; i++){
+                    GRBVar var = model.getVar(i);
+                    if(!var.get(GRB.StringAttr.VarName).equals("K") && !var.get(GRB.StringAttr.VarName).equals("W")){
                         System.out.println(var.get(GRB.StringAttr.VarName) + " = " + var.get(GRB.DoubleAttr.X));
+                        //salvo la sol perchè mi servirà per la combinazione convessa della PROCEDURA 2
+                        sol_fase_1[i] = var.get(GRB.DoubleAttr.X);
+                    }
                 }
             }else {
                 System.out.println("Due fasi non applicabile");
             }
+
+            //PROCEDURA 2: Faccio una combinazione convessa tra la sol trovata dalla prima fase e la sol ottima, per comodità trovo il punto medio tra i 2
+
+            //Creo una nuova sol che sarà il punto medio, ovvero la mia sol ammisibile
+            Double[] punto_medio = new Double[79];
+            for (int i=0; i<79; i++){
+                punto_medio[i] = (sol_fase_1[i] + sol_ottima[i])/2;
+            }
+            //comunico la sol trovata
+            System.out.println("\nsoluzione ammissibile non ottima 2:");
+            for (int i=0; i<79; i++) {
+                System.out.println(model.getVar(i).get(GRB.StringAttr.VarName) + " = " + punto_medio[i]);
+            }
+
         }catch(GRBException e){
             System.out.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
         }
