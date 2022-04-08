@@ -209,7 +209,7 @@ public class Coppia16 {
                 if(!var.get(GRB.StringAttr.VarName).equals("W"))
                     System.out.println(var.get(GRB.StringAttr.VarName) + " = " + var.get(GRB.DoubleAttr.X));
             }
-            //salvo la sol in una variabile perchè mi servirà nella PROCEDURA 2 del QUESITO 3
+            //salvo la sol in una variabile perchè mi servirà nella PROCEDURA 3 del QUESITO 3
             Double[] sol_ottima = new Double[79+60];
             for(int i=0; i<79+60; i++){
                 sol_ottima[i] = model.getVar(i).get(GRB.DoubleAttr.X);
@@ -257,12 +257,31 @@ public class Coppia16 {
 
             //-------------------------------QUESITO 3--------------------------------------
             System.out.printf("QUESITO III:\n");
-            //PROCEDURA 1: Cottengo una sol ammissibile grazie al problema ausiliario
+
+            //PROCEDURA 1: Imposto un ulteriore vincolo su una variabile X e trovo la soluzione ottima per il nuovo problema
+            //che sará una soluzione ammissimile del problema iniziale
+
+            //aggiungo il vincolo sulla X_0_0 (che nella sol. ottima era = 0) ponendo X_0_0 >= 1
+            GRBLinExpr ex = new GRBLinExpr();
+            ex.addTerm(1, xij[0][0]);
+            model.addConstr(ex, GRB.GREATER_EQUAL, 1, "vincolo aggiuntivo");
+            //ora ottimizzo il nuovo problema che avrá gli stessi vincoli di prima piú uno
+            model.optimize();
+            System.out.println("soluzione ammissibile non ottima 1:");
+            //stampa sol ammissibile 1
+            for(GRBVar var : model.getVars()) {
+                if(!var.get(GRB.StringAttr.VarName).equals("W"))
+                    System.out.println(var.get(GRB.StringAttr.VarName) + " = " + var.get(GRB.DoubleAttr.X));
+            }
+
+            //---------------------------------------------------------------------------------
+
+            //PROCEDURA 2: Cottengo una sol ammissibile grazie al problema ausiliario
             //creo le variabili ausiliarie
             model.reset();
             model.remove(W);
 
-            //salverò la sol ammissimibile, perchè mi servirà per la PROCEDURA 2
+            //salverò la sol ammissimibile, perchè mi servirà per la PROCEDURA 3
             Double[] sol_fase_1 = new Double[79+60];
 
             GRBVar[] h = new GRBVar[79]; //2 + 60 + 10 + 6 + 1
@@ -371,24 +390,24 @@ public class Coppia16 {
 
             model.optimize();
 
-            boolean sol_amm_1 = true;
+            boolean sol_amm_2 = true;
             //controllo che la funzione obiettivo del problema ausiliario sia zero
             if(model.get(GRB.DoubleAttr.ObjVal) == 0){
                 //itero solo sulle variabili ausiliarie
                 for(GRBVar var : h)
                     //se la variabile ausiliaria è in base con valore diverso da zero allora il mio problema non ha sol
                     if(var.get(GRB.IntAttr.VBasis) == 0 && var.get(GRB.DoubleAttr.X) != 0)
-                        sol_amm_1 = false;
+                        sol_amm_2 = false;
             }else{
-                sol_amm_1 = false;
-            }//guardo se sol_amm_1 è ancora vero, in caso comunico la sol di partenza, che non è l'ottimo
-            if(sol_amm_1){
-                System.out.println("\nsoluzione ammissibile non ottima 1:");
+                sol_amm_2 = false;
+            }//guardo se sol_amm_2 è ancora vero, in caso comunico la sol di partenza, che non è l'ottimo
+            if(sol_amm_2){
+                System.out.println("\nsoluzione ammissibile non ottima 2:");
                 for(int i=0; i<79+60; i++){
                     GRBVar var = model.getVar(i);
                     if(!var.get(GRB.StringAttr.VarName).equals("K") && !var.get(GRB.StringAttr.VarName).equals("W")){
                         System.out.println(var.get(GRB.StringAttr.VarName) + " = " + var.get(GRB.DoubleAttr.X));
-                        //salvo la sol perchè mi servirà per la combinazione convessa della PROCEDURA 2
+                        //salvo la sol perchè mi servirà per la combinazione convessa della PROCEDURA 3
                         sol_fase_1[i] = var.get(GRB.DoubleAttr.X);
                     }
                 }
@@ -396,7 +415,10 @@ public class Coppia16 {
                 System.out.println("Due fasi non applicabile");
             }
 
-            //PROCEDURA 2: Faccio una combinazione convessa tra la sol trovata dalla prima fase e la sol ottima, per comodità trovo il punto medio tra i 2
+            //----------------------------------------------------------------------------------------------------
+
+            //PROCEDURA 3: Faccio una combinazione convessa tra la sol trovata dalla prima fase e la sol ottima,
+            //             per comodità trovo il punto medio tra i 2.
 
             //Creo una nuova sol che sarà il punto medio, ovvero la mia sol ammisibile
             Double[] punto_medio = new Double[79+60];
@@ -404,10 +426,14 @@ public class Coppia16 {
                 punto_medio[i] = (sol_fase_1[i] + sol_ottima[i])/2;
             }
             //comunico la sol trovata
-            System.out.println("\nsoluzione ammissibile non ottima 2:");
+            System.out.println("\nsoluzione ammissibile non ottima 3:");
             for (int i=0; i<79+60; i++) {
                 System.out.println(model.getVar(i).get(GRB.StringAttr.VarName) + " = " + punto_medio[i]);
             }
+
+
+
+
 
         }catch(GRBException e){
             System.out.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
