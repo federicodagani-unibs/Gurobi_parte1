@@ -267,7 +267,7 @@ public class Coppia16 {
             model.addConstr(ex, GRB.GREATER_EQUAL, 1, "vincolo aggiuntivo");
             //ora ottimizzo il nuovo problema che avrá gli stessi vincoli di prima piú uno
             model.optimize();
-            System.out.println("soluzione ammissibile non ottima 1:");
+            System.out.printf("\nsoluzione ammissibile non ottima 1:\n");
             //stampa sol ammissibile 1
             for(GRBVar var : model.getVars()) {
                 if(!var.get(GRB.StringAttr.VarName).equals("W"))
